@@ -6,14 +6,13 @@ const About = () => {
             id='about'
         >
             <div className="container about" >
-                <h1 style={{ letterSpacing: '6px' }} className='prithvi_title '>About Us</h1>
+                <h1 style={{ letterSpacing: '6px' }} className='prithvi_title py-3'>About Us</h1>
                 <div className="row">
                     <div className="col-lg-6 col-md-5 col-sm-10 col-xs-10">
-                        <img style={{ borderRadius: '10px' }} src="https://images.unsplash.com/photo-1503221043305-f7498f8b7888?q=80&w=2953&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
+                        <img style={{ borderRadius: '10px' }} src="https://plus.unsplash.com/premium_photo-1677093906217-9420a5f16322?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dmVyaWZpY2F0aW9ufGVufDB8fDB8fHww" alt="" />
                     </div>
                     <div className="col-lg-6 col-md-5 col-sm-10 col-xs-10">
-                        <p className="fs-1">Why Choose Our Travel Itinerary Planner?</p>
-                        <p className='fs-5'>Welcome to our Blockchain-Based Certificate Issuing Platform! Our platform is designed to bring transparency, security, and ease to the process of issuing and verifying course completion certificates. By leveraging cutting-edge blockchain technology, we ensure that certificates are immutable, easily verifiable, and globally accessible.</p>
+                        <p className='fs-3 '>Welcome to our Blockchain-Based Certificate Issuing Platform! Our platform is designed to bring transparency, security, and ease to the process of issuing and verifying course completion certificates. By leveraging cutting-edge blockchain technology, we ensure that certificates are immutable, easily verifiable, and globally accessible.</p>
                     </div>
                 </div>
                 <section class="client-logo-area client-logo-one">
