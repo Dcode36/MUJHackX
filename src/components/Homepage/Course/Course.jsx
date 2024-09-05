@@ -9,6 +9,7 @@ const Course = () => {
     const [checkedItems, setCheckedItems] = useState({});  // State to track checked items
     const [allCourses, setAllCourses] = useState([]);  // State to store all courses
     const [userCourses, setUserCourses] = useState([]);  // State to store user-specific courses
+    const [certificateData, setCertificateData] = useState(null); // State to store certificate data
     const { user } = useUser();  // Get user information from Clerk
     const userId = user?.id;
 
@@ -45,8 +46,8 @@ const Course = () => {
 
     const handleCompleteCourse = async (courseId) => {
         try {
-            // Call the API to update course status
-            await axios.put(`https://t83s14q4-8888.inc1.devtunnels.ms/courses/${userId}/${courseId}`, { status: "complete" });
+            // Call the API to update course status and generate certificate
+            const response = await axios.put(`https://t83s14q4-8888.inc1.devtunnels.ms/courses/${userId}/${courseId}`, { status: "complete" });
 
             // Update the local state to mark the course as completed
             setUserCourses(prevCourses =>
@@ -54,6 +55,9 @@ const Course = () => {
                     course.id === courseId ? { ...course, status: "complete" } : course
                 )
             );
+
+            // Store the certificate data from the API response
+            setCertificateData(response.data.certificate);
 
             // Clear the checked items after course completion
             setCheckedItems(prev => {
@@ -67,9 +71,10 @@ const Course = () => {
             });
 
             alert("Course status updated!");
+            // Optionally reload the page or perform other actions here
             window.location.reload();
         } catch (error) {
-            console.error("Error updating course status:", error);
+            alert("Error updating course status:", error);
         }
     };
 
@@ -103,7 +108,7 @@ const Course = () => {
                             )}
 
                         </Typography>
-                        <Typography varient="h6" className='mb-2'> Duration: {course.id.duration} hours</Typography>
+                        <Typography variant="h6" className='mb-2'> Duration: {course.id.duration} hours</Typography>
 
                         <Accordion>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -155,6 +160,54 @@ const Course = () => {
                         <Typography>No courses available at the moment.</Typography>
                     )}
                 </div>
+
+                {/* Certificate Display */}
+                {certificateData && (
+                    <div style={{
+                        border: '10px solid black',
+                        backgroundImage: 'url(https://d1csarkz8obe9u.cloudfront.net/posterpreviews/certificate-background-template-design-36d583574422245c0d33c5d2f5a1bb58_screen.jpg?ts=1692768955)',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundSize: 'cover',
+                        backgroundPosition: "center",
+                        padding: '20px',
+                        marginTop: '30px',
+                        textAlign: 'center',
+                        position: 'relative',
+                        width: '80%',
+                        margin: 'auto',
+                        height: "500px",
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        borderRadius: '2px'
+                    }}>
+                        <h2 style={{ fontWeight: 'bold' }}>Certificate of Completion</h2>
+                        <p style={{ fontSize: '18px', margin: '10px 0' }}>
+                            This is to certify that <strong>{user?.firstName} {user?.lastName}</strong> has successfully completed the course
+                            <strong> {certificateData.courseTitle}</strong> on <strong>{certificateData.issueDate}</strong>.
+                        </p>
+                        <p style={{ fontSize: '16px', marginBottom: '20px' }}>
+                            This certification acknowledges the successful completion of all course requirements and demonstrates proficiency in the subject matter.
+                        </p>
+                        <div style={{
+                            position: 'absolute',
+                            top: '40px',
+                            left: '40px',
+                            fontSize: '16px'
+                        }}>
+                            Student ID: {userId}
+                        </div>
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '40px',
+                            right: '40px',
+                            fontSize: '16px'
+                        }}>
+                            <strong>Signature</strong>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );
