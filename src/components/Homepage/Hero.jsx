@@ -18,7 +18,7 @@ const Hero = () => {
     }
     return (
         <>
-            <div className='grid' style={{minHeight:"80vh"}}>
+            <div className='grid' style={{minHeight:"60vh"}}>
 
                 <div className="container hero d-flex justify-content-center align-items-center overflow-hidden flex-direction-column" style={{ flexDirection: 'column', borderBottom: '1px solid #0001' }} >
                     <div className="heading text-center py-5 mt-5">
