@@ -10,7 +10,7 @@ const Course = () => {
     const [allCourses, setAllCourses] = useState([]);  // State to store all courses
     const [userCourses, setUserCourses] = useState([]);  // State to store user-specific courses
     const [certificateData, setCertificateData] = useState(null); // State to store certificate data
-    const { user } = useUser();  // Get user information from Clerk
+    const { user, isSignedIn } = useUser();  // Get user information from Clerk
     const userId = user?.id;
 
     // Fetch all courses and user-specific courses on page load
@@ -90,61 +90,74 @@ const Course = () => {
             <div className="container">
                 {/* User-Specific Courses */}
                 <Typography variant="h6" style={{ marginTop: '20px' }}>Your Courses</Typography>
-                {userCourses.length > 0 ? userCourses.map((course) => (
-                    <div key={course.id} style={{ margin: '20px' }}>
-                        <Typography className='fw-bold py-2 mt-2' variant="h5" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            {course.id.title}
+                {
+                    isSignedIn ? (
+                        userCourses.length > 0 ? (
+                            userCourses.map((course) => (
+                                <div key={course.id} style={{ margin: '20px' }}>
+                                    <Typography
+                                        className='fw-bold py-2 mt-2'
+                                        variant="h5"
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                                    >
+                                        {course.id.title}
 
-                            {course.status === 'complete' ? (
-                                <div className='d-flex'>
-                                    <span style={{ height: '12px', width: '12px', backgroundColor: 'green', borderRadius: '50%' }}></span>
-                                    <Typography variant="caption" style={{ marginLeft: '8px' }}>Course Completed</Typography>
-                                </div>
-                            ) : (
-                                <div className='d-flex'>
-                                    <span style={{ height: '12px', width: '12px', backgroundColor: 'gray', borderRadius: '50%' }}></span>
-                                    <Typography variant="caption" style={{ marginLeft: '8px' }}>Course Incomplete</Typography>
-                                </div>
-                            )}
-
-                        </Typography>
-                        <Typography variant="h6" className='mb-2'> Duration: {course.id.duration} hours</Typography>
-
-                        <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography>Course Content</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <div>
-                                    {
-                                        course.id.courseContent.map((val, index) => (
-                                            <div style={{ display: 'flex', alignItems: 'center' }} key={index}>
-                                                <Checkbox
-                                                    checked={!!checkedItems[`${course.id}-${index}`]}
-                                                    onChange={() => handleCheckboxChange(course.id, index)}
-                                                    disabled={course.id.status === 'complete'} // Disable checkbox if course is complete
-                                                />
-                                                <Typography>{val}</Typography>
+                                        {course.status === 'complete' ? (
+                                            <div className='d-flex'>
+                                                <span style={{ height: '12px', width: '12px', backgroundColor: 'green', borderRadius: '50%' }}></span>
+                                                <Typography variant="caption" style={{ marginLeft: '8px' }}>Course Completed</Typography>
                                             </div>
-                                        ))
-                                    }
-                                </div>
+                                        ) : (
+                                            <div className='d-flex'>
+                                                <span style={{ height: '12px', width: '12px', backgroundColor: 'gray', borderRadius: '50%' }}></span>
+                                                <Typography variant="caption" style={{ marginLeft: '8px' }}>Course Incomplete</Typography>
+                                            </div>
+                                        )}
+                                    </Typography>
 
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    disabled={!areAllCheckboxesChecked(course) || course.id.status === 'complete'}
-                                    onClick={() => handleCompleteCourse(course.id._id)}
-                                    style={{ marginTop: '10px' }}
-                                >
-                                    Complete Course
-                                </Button>
-                            </AccordionDetails>
-                        </Accordion>
-                    </div>
-                )) : (
-                    <Typography>No courses found for this user.</Typography>
-                )}
+                                    <Typography variant="h6" className='mb-2'>
+                                        Duration: {course.id.duration} hours
+                                    </Typography>
+
+                                    <Accordion>
+                                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                            <Typography>Course Content</Typography>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <div>
+                                                {course.id.courseContent.map((val, index) => (
+                                                    <div style={{ display: 'flex', alignItems: 'center' }} key={index}>
+                                                        <Checkbox
+                                                            checked={!!checkedItems[`${course.id}-${index}`]}
+                                                            onChange={() => handleCheckboxChange(course.id, index)}
+                                                            disabled={course.status === 'complete'} // Disable checkbox if course is complete
+                                                        />
+                                                        <Typography>{val}</Typography>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                disabled={!areAllCheckboxesChecked(course) || course.status === 'complete'}
+                                                onClick={() => handleCompleteCourse(course.id._id)}
+                                                style={{ marginTop: '10px' }}
+                                            >
+                                                Complete Course
+                                            </Button>
+                                        </AccordionDetails>
+                                    </Accordion>
+                                </div>
+                            ))
+                        ) : (
+                            <Typography>No courses found for this user.</Typography>
+                        )
+                    ) : (
+                        <Typography>Please sign in to view your courses.</Typography>
+                    )
+                }
+
 
                 {/* All Other Courses */}
                 <Typography variant="h6" className='my-2' style={{ marginTop: '40px' }}>All Available Courses</Typography>

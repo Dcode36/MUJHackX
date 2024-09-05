@@ -3,13 +3,11 @@ import Navbar from '../../essentials/Navbar';
 import { TextField, MenuItem, Select, Button, FormControl, InputLabel, Box } from '@mui/material';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
+
 const courseOptions = [
-    "DSA",
-    "LLD",
     "Introduction to JavaScript",
-    "Frontend",
-    "C++",
-    "Java"
+    "Advanced Node.js",
+    "React for Beginners",
 ];
 
 const Verify = () => {
@@ -26,6 +24,7 @@ const Verify = () => {
     const handleCourseChange = (e) => {
         setCourse(e.target.value);
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -37,6 +36,24 @@ const Verify = () => {
         }
     };
 
+    const printCertificate = () => {
+        const printWindow = window.open('', '', 'height=600,width=800');
+        printWindow.document.write('<html><head><title>Print Certificate</title>');
+        printWindow.document.write('</head><body >');
+        printWindow.document.write(document.getElementById('certificate').innerHTML);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    };
+
+    const copyCertificateId = () => {
+        navigator.clipboard.writeText(certificateData.certificate.studentId).then(() => {
+            alert('Certificate ID copied to clipboard!');
+        }, (err) => {
+            console.error('Failed to copy ID: ', err);
+        });
+    };
 
     return (
         <div>
@@ -77,28 +94,30 @@ const Verify = () => {
                         </Button>
                     </form>
                     {showCertificate && (
-                        < div style={{
-                            border: '10px solid black',
-                            backgroundImage: 'url(https://d1csarkz8obe9u.cloudfront.net/posterpreviews/certificate-background-template-design-36d583574422245c0d33c5d2f5a1bb58_screen.jpg?ts=1692768955)',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: 'cover',
-                            backgroundPosition: "center",
-                            padding: '20px',
-                            marginTop: '30px',
-                            textAlign: 'center',
-                            position: 'relative',
-                            width: '80%',
-                            margin: 'auto',
-                            height: "500px",
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            flexDirection: 'column',
-                            borderRadius: '2px'
-                        }}>
+                        <div
+                            id="certificate"
+                            style={{
+                                border: '10px solid black',
+                                backgroundImage: 'url(https://d1csarkz8obe9u.cloudfront.net/posterpreviews/certificate-background-template-design-36d583574422245c0d33c5d2f5a1bb58_screen.jpg?ts=1692768955)',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundSize: 'cover',
+                                backgroundPosition: "center",
+                                padding: '20px',
+                                marginTop: '30px',
+                                textAlign: 'center',
+                                position: 'relative',
+                                width: '80%',
+                                margin: 'auto',
+                                height: "500px",
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                flexDirection: 'column',
+                                borderRadius: '2px'
+                            }}>
                             <h2 style={{ fontWeight: 'bold' }}>Certificate of Completion</h2>
-                            <p style={{ fontSize: '18px', margin: '10px 0' }}>
-                                This is to certify that <strong>{certificateData.certificate.userName}</strong> has successfully completed the course
+                            <p style={{ fontSize: '18px', margin: '10px 50px' }}>
+                                This is to certify that <strong className='fs-3'>{certificateData.certificate.userName}</strong> has successfully completed the course
                                 <strong> {certificateData.certificate.course}</strong> on <strong>{certificateData.certificate.issueDate.slice(0, 10)}</strong>.
                             </p>
                             <p style={{ fontSize: '16px', marginBottom: '20px' }}>
@@ -118,7 +137,16 @@ const Verify = () => {
                                 right: '40px',
                                 fontSize: '16px'
                             }}>
+                                CEO <br />
                                 Digital Signature
+                            </div>
+                            <div className="no-print" style={{ marginTop: '20px' }}>
+                                <Button variant="contained" color="secondary" onClick={printCertificate}>
+                                    Download
+                                </Button>
+                                <Button variant="contained" color="primary" onClick={copyCertificateId} style={{ marginLeft: '10px' }}>
+                                    Copy ID
+                                </Button>
                             </div>
                         </div>
                     )}
